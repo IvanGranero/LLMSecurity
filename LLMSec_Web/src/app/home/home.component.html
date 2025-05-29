@@ -1,0 +1,103 @@
+﻿<div class="home-container">
+    <div class="top">
+        <div class="upload-row">
+
+            <div style="display: flex;">
+                <div class="container" *ngIf="loading">
+                    <h3>Loading ...</h3>
+                </div>
+            </div>
+
+        </div>
+    </div>
+    <div class="description">
+        <h1>LLM Security</h1>
+        <p [innerHTML]="description"></p>
+        <label for="level">Select Level:</label>
+        <select id="level" [(ngModel)]="selectedLevel" (ngModelChange)="onLevelChange($event)" [disabled]="loading">
+            <option value="Level 1">Level 1</option>
+            <option value="Level 2">Level 2</option>
+            <option value="Level 3">Level 3</option>
+        </select>
+    </div>
+    <form #homeForm="ngForm" (ngSubmit)="submit()">
+        <div class="form-group">            
+            <div class="diagram">
+                <div class="block" id="system-prompt">
+                    <h3>System-prompt</h3>
+                    <textarea [(ngModel)]="systemPrompt" name="systemPrompt" [readonly]="mode === 'attacker'" rows="5" placeholder="Enter system prompt"></textarea>
+                </div>
+                <div class="block" id="user-prompt">
+                    <h3>User-prompt</h3>
+                    <textarea [(ngModel)]="userPrompt" name="userPrompt" [readonly]="mode === 'defender'" rows="3" placeholder="Enter user prompt"></textarea>
+                    <button type="submit" [disabled]="loading || mode === 'defender'" class="primary-btn submit-btn">Submit</button>
+                </div>
+                <div class="block" id="documents-rag">
+                    <h3>Documents (RAG)</h3>
+                    <p>External documents retrieved via Retrieval-Augmented Generation</p>
+                </div>
+                <div class="block" id="input-filter">
+                    <h3>Input-filter</h3>
+                    <textarea [(ngModel)]="inputFilter" name="inputFilter" [readonly]="mode === 'attacker'" rows="5" placeholder="Input filter"></textarea>
+                </div>
+                <div class="block" id="llm-brain">
+                    <h3>LLM</h3>
+                    <p>The core model that processes the input and generates responses</p>
+                    <label for="llmModel">Select LLM Model:</label>
+                    <select id="llmModel" [(ngModel)]="selectedLLMModel" [disabled]="loading || mode === 'attacker'">
+                        <option value="gpt-3.5-turbo">gpt-3.5-turbo</option>
+                        <option value="gpt-4o-mini">gpt-4o-mini</option>
+                    </select>
+                    <button type="submit" [disabled]="loading || mode === 'attacker'" class="primary-btn submit-btn">
+                        Submit Settings
+                    </button>
+                </div>
+                <div class="block" id="output-filter">
+                    <h3>Output-filter</h3>
+                    <textarea [(ngModel)]="outputFilter" name="outputFilter" [readonly]="mode === 'attacker'" rows="5" placeholder="Output filter"></textarea>
+                </div>
+                <div class="block" id="output">
+                    <h3>Output</h3>
+                    <div *ngIf="response" class="output-content" id="output-content">
+                    <p>{{ response }}</p>
+                    </div>
+                </div>
+                <div class="block" id="guardrails-block" [class.readonly-block]="mode === 'attacker'">
+                    <h3>Guardrails</h3>
+                    <label>
+                        <input type="radio"
+                            name="guardrail"
+                            [(ngModel)]="selectedGuardrail"
+                            value="DataMarking"
+                            [disabled]="mode === 'attacker'"
+                            (change)="updateSystemPrompt()"> DataMarking
+                    </label><br>
+                    <label>
+                        <input type="radio"
+                            name="guardrail"
+                            [(ngModel)]="selectedGuardrail"
+                            value="Delimiter"
+                            [disabled]="mode === 'attacker'"
+                            (change)="updateSystemPrompt()"> Delimiter
+                    </label><br>
+                    <label>
+                        <input type="radio"
+                            name="guardrail"
+                            [(ngModel)]="selectedGuardrail"
+                            value="Encoding"
+                            [disabled]="mode === 'attacker'"
+                            (change)="updateSystemPrompt()"> Encoding
+                    </label><br>
+                    <label>
+                        <input type="radio"
+                            name="guardrail"
+                            [(ngModel)]="selectedGuardrail"
+                            value="None"
+                            [disabled]="mode === 'attacker'"
+                            (change)="updateSystemPrompt()"> None
+                    </label>
+                </div>
+            </div>
+        </div>
+    </form>
+</div>

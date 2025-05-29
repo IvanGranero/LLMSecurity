@@ -1,0 +1,23 @@
+<nav class="custom-navbar" *ngIf="currentUser">
+  <div class="nav-left">
+    <h1>{{ currentUser.name }}'s Settings</h1>
+  </div>
+  <div class="nav-right">
+    <button 
+      class="nav-btn primary-btn" 
+      [class.active]="mode === 'attacker'" 
+      (click)="setMode('attacker')">
+      Attacker
+    </button>
+    <button 
+      class="nav-btn primary-btn" 
+      [class.active]="mode === 'defender'" 
+      (click)="setMode('defender')">
+      Defender
+    </button>
+    <button class="nav-btn secondary-btn" (click)="logout()">Logout</button>
+  </div>
+</nav>
+
+<alert></alert>
+<router-outlet></router-outlet>
