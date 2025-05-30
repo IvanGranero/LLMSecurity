@@ -7,7 +7,7 @@ let routes = (app) => {
   router.post("/api/register", controller.register);
   router.post("/api/submitprompt", controller.authenticateJWT, controller.submitprompt);
   router.post("/api/submitsettings", controller.authenticateJWT, controller.submitsettings);
-  router.get("/api/verify/:id/:token", controller.verifyemail);
+  //router.get("/api/verify/:id/:token", controller.verifyemail);
   app.use(router);
 
 };
