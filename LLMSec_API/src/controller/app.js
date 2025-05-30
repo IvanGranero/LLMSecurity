@@ -1,6 +1,7 @@
 const path = require('path');
 const mongoose = require ('mongoose');
 const jwt = require('jsonwebtoken');
+const sendEmail = require("../utils/email");
 const { generateSystemPrompt, generateUserPrompt, checkAgainstBlocklist } = require("../utils/guardrails");
 const { sendPrompt } = require('../utils/openaiservice')
 const ExpressError = require('../utils/ExpressError');

@@ -15,8 +15,6 @@ app.use( cors({
 
 app.use(express.json());
 
-app.use(express.static('assets'))
-
 app.use((err, req, res, next) => {
   const { status = 500, message = 'Error' } = err;
   res.status(status).send(message);
