@@ -1,14 +1,31 @@
-<ngx-charts-line-chart
-  [view]="[800, 500]"
-  [scheme]="'vivid'"
-  [results]="chartData"
-  [xAxis]="true"
-  [yAxis]="true"
-  [legend]="true"
-  [showXAxisLabel]="true"
-  [showYAxisLabel]="true"
-  [xAxisLabel]="'Time'"
-  [yAxisLabel]="'Score'"
-  [autoScale]="true"
-  [timeline]="true">
-</ngx-charts-line-chart>
+<div class="scoreboard-wrapper">
+    <div class="home-container">
+        <div class="top">
+            <div class="upload-row">
+
+                <div style="display: flex;">
+                    <div class="container" *ngIf="loading">
+                        <h3>Loading ...</h3>
+                    </div>
+                </div>
+
+            </div>
+        </div>
+        <div class="description">
+            <ngx-charts-line-chart
+            [view]="[800, 500]"
+            [scheme]="'ocean'"
+            [results]="chartData"
+            [xAxis]="true"
+            [yAxis]="true"
+            [legend]="true"
+            [showXAxisLabel]="true"
+            [showYAxisLabel]="true"
+            [xAxisLabel]="'Time'"
+            [yAxisLabel]="'Score'"
+            [autoScale]="true"
+            [timeline]="true">
+            </ngx-charts-line-chart>
+        </div>
+    </div>
+</div>

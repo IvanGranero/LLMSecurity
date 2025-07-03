@@ -4,14 +4,14 @@ import { BehaviorSubject } from 'rxjs';
 
 @Injectable({ providedIn: 'root' })
 export class ModeService {
-  private modeSubject = new BehaviorSubject<'attacker' | 'defender'>('attacker');
+  private modeSubject = new BehaviorSubject<'flag' | 'attacker' | 'defender'>('attacker');
   mode$ = this.modeSubject.asObservable();
 
-  setMode(mode: 'attacker' | 'defender') {
+  setMode(mode: 'flag' | 'attacker' | 'defender') {
     this.modeSubject.next(mode);
   }
 
-  get currentMode(): 'attacker' | 'defender' {
+  get currentMode(): 'flag' | 'attacker' | 'defender' {
     return this.modeSubject.value;
   }
 }

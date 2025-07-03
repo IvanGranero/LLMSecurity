@@ -10,18 +10,33 @@
 
         </div>
     </div>
-    <div class="description">
-        <h1>LLM Security</h1>
-        <p [innerHTML]="description"></p>
-        <label for="level">Select Level:</label>
-        <select id="level" [(ngModel)]="selectedLevel" (ngModelChange)="onLevelChange($event)" [disabled]="loading">
+
+    <div class="container">
+        <h1 class="title">LLM Security</h1>    
+        <div class="description">
+            <p [innerHTML]="description"></p>
+            <label for="level">Select Level:</label>
+            <select id="level" [(ngModel)]="selectedLevel" name="selectedLevel" (ngModelChange)="onLevelChange($event)" [disabled]="loading">
             <option value="Level 1">Level 1</option>
             <option value="Level 2">Level 2</option>
             <option value="Level 3">Level 3</option>
-        </select>
+            <option value="Level 1">Level 4</option>
+            <option value="Level 2">Level 5</option>
+            <option value="Level 3">Level 6</option>
+            <option value="Level 3">Level 7</option>
+            </select>
+        </div>
+        <div class="form-section" *ngIf="mode === 'flag'">
+            <form #homeForm="ngForm" (ngSubmit)="submit_flag()">
+            <label for="flag">Enter Flag:</label>
+            <input type="text" id="flag" [(ngModel)]="flagInput" name="flagInput" [disabled]="loading" required />
+            <button type="submit" class="primary-btn submit-btn">Submit Flag</button>
+            </form>
+        </div>
     </div>
+
     <form #homeForm="ngForm" (ngSubmit)="submit()">
-        <div class="form-group">            
+        <div class="form-group" *ngIf="mode !== 'flag'">
             <div class="diagram">
                 <div class="block" id="system-prompt">
                     <h3>System-prompt</h3>
@@ -44,7 +59,7 @@
                     <h3>LLM</h3>
                     <p>The core model that processes the input and generates responses</p>
                     <label for="llmModel">Select LLM Model:</label>
-                    <select id="llmModel" [(ngModel)]="selectedLLMModel" [disabled]="loading || mode === 'attacker'">
+                    <select id="llmModel" [(ngModel)]="selectedLLMModel" name="selectedLLMModel" [disabled]="loading || mode === 'attacker'">
                         <option value="gpt-3.5-turbo">gpt-3.5-turbo</option>
                         <option value="gpt-4o-mini">gpt-4o-mini</option>
                     </select>

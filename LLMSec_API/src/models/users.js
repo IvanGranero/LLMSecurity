@@ -2,16 +2,20 @@ const mongoose = require('mongoose');
 const bcrypt = require('bcrypt');
 
 const userSchema = new mongoose.Schema({
-    name: String,               //alphanumeric
+    username: {
+        type: String,
+        required: true,
+        unique: true
+    },
     email: {                    //lowercase
         type: String,           
         required: true,
         unique: true
-    },                          
+    },
     userCategory: {
         type: String,
         required: false,
-        default: "user"     // if admin is needed it needs to be changed manually by an admin
+        default: "user"     // maybe change to defender or attacker
     },
     password: { 
         type: String, 
@@ -27,7 +31,18 @@ const userSchema = new mongoose.Schema({
         default: false,
     },
     sessionToken: String,
-    sshkey: String
+    scores: [{
+        score: Number,
+        submissionDate: { 
+            type: Date, 
+            default: Date.now
+        }
+    }],
+    totalScore: { 
+        type: Number, 
+        default: 0 
+    },
+    submittedFlags: [{ type: String }]    
 });
 
 userSchema.statics.authenticate = async function (email, password) {

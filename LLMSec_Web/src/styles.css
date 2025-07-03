@@ -6,10 +6,10 @@ body, html {
     width: 100%;
     margin: 0;
     font-family: 'Orbitron', sans-serif;
-    display: flex;
+    /* display: flex;
     flex-direction: column;
     justify-content: space-between;
-    align-items: center;
+    align-items: center; */
     background: linear-gradient(135deg, #1a0033 0%, #3a015c 100%);
     color: #bb86fc;
     overflow-x: hidden;
@@ -79,6 +79,14 @@ body, html {
     letter-spacing: 5px;
 }
 .auth-container {
+    display: grid;
+    place-items: center;
+    min-height: 100vh; /* Or any height you prefer */
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+
     background: rgba(51, 0, 102, 0.4);
     padding: 40px;
     border-radius: 20px;
@@ -161,29 +169,34 @@ button {
     0%, 100% { opacity: 0; }
     50% { opacity: 1; }
 }
+.scoreboard-wrapper {
+  width: 90%;
+  margin: auto;
+  padding: 1rem;
+  box-sizing: border-box;
+}
+.ngx-charts text { fill: #fff; }
+ngx-charts path {
+  animation: none !important;
+}
 .home-container {
     display: block;
-    background: rgba(51, 0, 102, 0.2);
-    padding: 0;
+    background: rgba(51, 0, 102, 0.9);
+    padding: 1rem;
     border-radius: 20px;
     box-shadow: 0 0 40px rgba(187, 134, 252, 0.3);
     align-self: stretch;
-    width: 100vw;
+    width: 90%;
     min-height: 100vh;
     text-align: center;
-    backdrop-filter: blur(15px);
+    backdrop-filter: blur(20px);
     border: 1px solid rgba(187, 134, 252, 0.2);
-    margin: 0;
+    margin: auto;
     box-sizing: border-box;
     color: #bb86fc;
     font-family: 'Orbitron', sans-serif;
+    z-index: 1000;
 }
-.description {
-  background-color: rgba(26, 0, 51, 0.1);
-  padding: 20px;
-  border-radius: 15px;
-}
-
 .form-group {
   background-color: rgba(26, 0, 51, 0.1);
   padding: 20px;
@@ -353,4 +366,33 @@ option {
     background-color: #1a0033;
     color: #bb86fc;
     font-family: 'Orbitron', sans-serif;
+}
+.container {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  background-color: rgba(26, 0, 51, 1);
+  padding: 30px;
+  border-radius: 15px;
+  border: 2px solid rgba(187, 134, 252, 0.5);
+  box-shadow: 0 4px 10px rgba(0, 0, 0, 0.3);
+  gap: 40px;
+  max-width: 500px;
+  margin: auto;
+}
+.title {
+  color: #BB86FC;
+  text-align: center;
+  margin-bottom: 0;
+}
+.description {
+  text-align: center;
+  color: white;
+}
+.form-section {
+  display: flex;
+  flex-direction: column;
+  gap: 15px;
+  width: 100%;
+  color: white;
 }

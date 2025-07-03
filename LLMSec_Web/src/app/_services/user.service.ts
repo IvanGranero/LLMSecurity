@@ -3,6 +3,7 @@ import { HttpClient } from '@angular/common/http';
 
 import { environment } from '../../environments/environment';
 import { User } from '../_models';
+import { Observable } from 'rxjs';
 
 @Injectable({ providedIn: 'root' })
 export class UserService {
@@ -12,11 +13,19 @@ export class UserService {
         return this.http.post(`${environment.apiUrl}/register`, user);
     }
 
-    submitprompt(id: number, userprompt: string) {
-        return this.http.post<{message:string, response:string}>(`${environment.apiUrl}/submitprompt`, { id, userprompt });
+    submitprompt(id: string, level: string, userprompt: string) {
+        return this.http.post<{message:string, response:string}>(`${environment.apiUrl}/submitprompt`, { id, level, userprompt });
     }
 
-    submitsettings(id: number, settings: any) {
+    submitsettings(id: string, settings: any) {
         return this.http.post<{message:string}>(`${environment.apiUrl}/submitsettings`, { id, settings });
+    }
+
+    submitflag(id: string, level: string, flag: string) {
+        return this.http.post<{message:string, response:string}>(`${environment.apiUrl}/submitflag`, { id, level, flag });
+    }
+
+    getScoreboard(): Observable<any[]> {
+        return this.http.get<any[]>(`${environment.apiUrl}/scoreboard`);
     }    
 }

@@ -36,7 +36,7 @@ export class RegisterComponent implements OnInit, OnDestroy {
 
     ngOnInit() {
         this.registerForm = this.formBuilder.group({
-            name: ['', Validators.required],
+            username: ['', Validators.required],
             email: ['', Validators.required],
             password: ['', [Validators.required, Validators.minLength(6)]]
         });

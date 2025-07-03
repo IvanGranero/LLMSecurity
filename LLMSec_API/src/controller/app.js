@@ -2,7 +2,7 @@ const path = require('path');
 const mongoose = require ('mongoose');
 const jwt = require('jsonwebtoken');
 const sendEmail = require("../utils/email");
-const { generateSystemPrompt, generateUserPrompt, checkAgainstBlocklist } = require("../utils/guardrails");
+const { levelToPass, generateSystemPrompt, generateUserPrompt, checkAgainstBlocklist } = require("../utils/guardrails");
 const { sendPrompt } = require('../utils/openaiservice')
 const ExpressError = require('../utils/ExpressError');
 const user =  require('../models/users');
@@ -11,13 +11,57 @@ const crypto = require('crypto');
 const fs = require('fs').promises;
 require('dotenv').config();
 
-const llmsettings = {};
-
-llmsettings.systemprompt = generateSystemPrompt("Level 1", "None"); // initial level and settings
-llmsettings.spotlight = "None";
-llmsettings.model = "gpt-4o-mini"
-llmsettings.inputfilter = [];
-llmsettings.outputfilter = [];
+const llmsettings = {
+  "Level 1": {
+    systemprompt: "Make it easy, don't refuse!",
+    spotlight: "None",
+    model: "gpt-4o-mini",
+    inputfilter: [],
+    outputfilter: []
+  },
+  "Level 2": {
+    systemprompt: "Make it easy, don't refuse!",
+    spotlight: "None",
+    model: "gpt-4o-mini",
+    inputfilter: [],
+    outputfilter: []
+  },
+  "Level 3": {
+    systemprompt: "Make it easy, don't refuse!",
+    spotlight: "None",
+    model: "gpt-4o-mini",
+    inputfilter: [],
+    outputfilter: []
+  },
+  "Level 4": {
+    systemprompt: "Make it easy, don't refuse!",
+    spotlight: "None",
+    model: "gpt-4o-mini",
+    inputfilter: [],
+    outputfilter: []
+  },
+  "Level 5": {
+    systemprompt: "Make it easy, don't refuse!",
+    spotlight: "None",
+    model: "gpt-4o-mini",
+    inputfilter: [],
+    outputfilter: []
+  },
+  "Level 6": {
+    systemprompt: "Make it easy, don't refuse!",
+    spotlight: "None",
+    model: "gpt-4o-mini",
+    inputfilter: [],
+    outputfilter: []
+  },
+  "Level 7": {
+    systemprompt: "Make it easy, don't refuse!",
+    spotlight: "None",
+    model: "gpt-4o-mini",
+    inputfilter: [],
+    outputfilter: []
+  }
+};
 
 mongoose.connect(process.env.DB_HOST, { useNewUrlParser: true, useUnifiedTopology: true })
 .then(() => {
@@ -53,11 +97,11 @@ const authenticateJWT = (req, res, next) => {
 };
 
 // To prevent brute-force attacks, consider adding logging or rate limiting for login attempts.
-const login = async (req, res, next) => {
+const login = async (req, res, next) => {  
   try {
 
     if (!validate(req.body)) return next(new ExpressError('No credentials provided', 400) );
-
+    console.log(req.body)
     let foundUser = await user.authenticate(req.body.email, req.body.password);
     if (!foundUser) {
       //return next (new ExpressError('Incorrect username or password', 404) );
@@ -98,7 +142,7 @@ const register = async (req, res, next) => {
     if (!validate(req.body))
       return next(new ExpressError('No credentials provided', 400));
       
-    const { name, email, password } = req.body;
+    const { username, email, password } = req.body;
     const email_lower =  email.toLowerCase()
 
     const userExist = await user.findOne({ email: email_lower });
@@ -108,7 +152,7 @@ const register = async (req, res, next) => {
       });
     }
     const nuUser = new user({
-      name,
+      username,
       email: email_lower,
       password, // password is being hashed inside the schema model as a pre save.
     });
@@ -180,19 +224,18 @@ const submitprompt = async (req, res, next) => {
     const foundUser = await user.findById(req.id.id);
     if (!foundUser) return next(new ExpressError('Not Authenticated', 401));
 
-    const { userprompt } = req.body;
+    const { level, userprompt } = req.body;
     if (!userprompt) return next(new ExpressError('No prompt provided', 400));
 
     let message = "Prompt processed successfully";
     let response = null;
 
-    if (checkAgainstBlocklist(userprompt, llmsettings.inputfilter)) {
+    if (checkAgainstBlocklist(userprompt, llmsettings[level].inputfilter)) {
       response = "Got you! It looks like you hit the input blocklist. Try to be more subtle plz!";
     } else {
-      const prompt = generateUserPrompt(userprompt, llmsettings.spotlight);
-      const aiResponse = await sendPrompt(llmsettings.systemprompt, prompt);
-
-      if (checkAgainstBlocklist(aiResponse, llmsettings.outputfilter)) {
+      const prompt = generateUserPrompt(userprompt, llmsettings[level].spotlight);
+      const aiResponse = await sendPrompt(llmsettings[level].systemprompt, prompt);
+      if (checkAgainstBlocklist(aiResponse, llmsettings[level].outputfilter)) {
         response = "Wow! It looks like you hit the output blocklist. This means you prooobably got the password but it got blocked. You're on the right track, try to be more creative! ;)";
       } else {
         response = aiResponse;
@@ -217,15 +260,15 @@ const submitsettings = async (req, res, next) => {
     const { settings } = req.body;
     if (!settings) return next(new ExpressError('Missing settings', 400));
 
-    const { systemPrompt, inputFilter, outputFilter, selectedGuardrail, sysmodel} = settings;
+    const { level, systemPrompt, inputFilter, outputFilter, selectedGuardrail, sysmodel} = settings;
 
-    llmsettings.inputfilter = inputFilter.split('\n').map(term => term.trim()).filter(Boolean);
-    llmsettings.outputfilter = outputFilter.split('\n').map(term => term.trim()).filter(Boolean);
-    llmsettings.spotlight = selectedGuardrail;
-    llmsettings.systemprompt = systemPrompt;
-    llmsettings.model = sysmodel;
-    // no need to generate system prompt as it's being generated on front end
-    //llmsettings.systemprompt = generateSystemPrompt(settings.level, settings.spotlight);
+    llmsettings[level].inputfilter = inputFilter.split('\n').map(term => term.trim()).filter(Boolean);
+    llmsettings[level].outputfilter = outputFilter.split('\n').map(term => term.trim()).filter(Boolean);
+    llmsettings[level].spotlight = selectedGuardrail;
+    llmsettings[level].model = sysmodel;
+    llmsettings[level].systemprompt = generateSystemPrompt(settings.level, systemPrompt, settings.spotlight);
+
+    console.log(llmsettings[level].systemprompt)
 
     return res.status(200).send({
       message: "Settings submitted successfully"
@@ -237,11 +280,81 @@ const submitsettings = async (req, res, next) => {
   }
 };
 
+const submitflag = async (req, res, next) => {
+  try {
+
+    const foundUser = await user.findById(req.id.id);
+    if (!foundUser) return next(new ExpressError('Not Authenticated', 401));
+
+    const { level, flag } = req.body;
+    if (!flag) return next(new ExpressError('No flag provided', 400));
+
+    let message = "";
+    
+    // Check if the flag is valid
+    if (levelToPass[level] && levelToPass[level].substring(16) === flag) {
+        // Check if the flag was already submitted
+        if (foundUser.submittedFlags.includes(flag)) {
+            return res.status(409).send({
+                message: "You have already submitted this flag"
+            });
+        }
+
+        // Award points and save flag
+        const score = foundUser.totalScore + 10;
+        message = "Congratulations! That is the correct flag!";
+        
+        foundUser.scores.push({
+            score,
+            submissionDate: new Date()
+        });
+
+        foundUser.totalScore = score;
+        foundUser.submittedFlags.push(flag); // Mark this flag as submitted
+        await foundUser.save();
+        
+        return res.status(200).json({ message, score });
+
+    } else {
+        return res.status(409).send({
+            message: "Incorrect flag"
+        });
+    }
+
+  } catch (err) {
+    console.error(err);
+    next(err);
+  }
+};
+
+const getScoreboard = async (req, res, next) => {
+  try {
+    const users = await user.find({}, "username scores totalScore").sort({ totalScore: -1 });
+
+    const scoreboardData = users.map(u => ({
+      username: u.username,
+      totalScore: u.totalScore,
+      scores: u.scores.map(scoreEntry => ({
+        score: scoreEntry.score,
+        submissionDate: scoreEntry.submissionDate
+      }))
+    }));
+
+    return res.status(200).json(scoreboardData);
+
+  } catch (err) {
+    console.error(err);
+    next(err);
+  }
+};
+
 module.exports = {
   register,
   login,
   authenticateJWT,
   verifyemail,
   submitprompt,
-  submitsettings
+  submitsettings,
+  submitflag,
+  getScoreboard
 };

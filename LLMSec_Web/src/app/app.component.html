@@ -1,6 +1,6 @@
 <nav class="custom-navbar" *ngIf="currentUser">
   <div class="nav-left">
-    <h1>{{ currentUser.name }}'s Settings</h1>
+    <h1>{{ currentUser.username }}'s Settings</h1>
   </div>
   <div class="nav-right">
     <button 
@@ -11,9 +11,20 @@
     </button>
     <button 
       class="nav-btn primary-btn" 
+      [class.active]="mode === 'flag'" 
+      (click)="setMode('flag')">
+      Submit Flag
+    </button>
+    <button 
+      class="nav-btn primary-btn" 
       [class.active]="mode === 'defender'" 
       (click)="setMode('defender')">
       Defender
+    </button>    
+    <button 
+      class="nav-btn primary-btn"
+      (click)="openScoreboard()">
+      Scoreboard
     </button>
     <button class="nav-btn secondary-btn" (click)="logout()">Logout</button>
   </div>

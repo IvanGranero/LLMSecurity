@@ -17,7 +17,7 @@ export class AppComponent {
   private router = inject(Router);
 
   currentUser: User | null = null;
-  mode: 'attacker' | 'defender' = 'attacker';
+  mode: 'flag' | 'attacker' | 'defender' = 'attacker';
 
   constructor(private modeService: ModeService) {
     this.authenticationService.currentUser$.subscribe(user => {
@@ -25,11 +25,16 @@ export class AppComponent {
     });
   }
 
-  setMode(mode: 'attacker' | 'defender') {
+  setMode(mode: 'flag' | 'attacker' | 'defender') {
     this.mode = mode;
     this.modeService.setMode(mode);
+    this.router.navigateByUrl('/');
   }
-  
+
+  openScoreboard(): void {
+    this.router.navigateByUrl('/scoreboard');
+  }
+
   logout(): void {
     this.authenticationService.logout();
     this.router.navigateByUrl('/login').then(() => {
